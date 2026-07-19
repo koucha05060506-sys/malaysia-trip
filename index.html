@@ -193,6 +193,25 @@ img{max-width:100%;display:block;}
 strong.hi{color:var(--fg);font-weight:700;}
 .mark{background:linear-gradient(transparent 60%,var(--mark-bg) 60%);padding-inline:1px;}
 
+/* why malaysia */
+.why{margin-top:30px;border-top:1px solid var(--rule);}
+.why-i{display:grid;grid-template-columns:180px 1fr auto;gap:10px 26px;
+  padding:20px 2px;border-bottom:1px solid var(--rule);align-items:baseline;}
+.why-i .h{font-family:var(--f-disp);font-weight:800;font-size:17px;line-height:1.5;}
+.why-i .d{font-size:14.5px;line-height:1.85;color:var(--fg-mid);}
+.why-i .d b{color:var(--fg);}
+.why-i .n{font-family:var(--f-mono);font-size:12px;letter-spacing:.04em;
+  color:var(--fg-dim);white-space:nowrap;text-align:right;
+  border-left:2px solid var(--sun);padding-left:14px;}
+@media (max-width:820px){
+  .why-i{grid-template-columns:1fr;gap:5px;padding:18px 2px;}
+  .why-i .n{text-align:left;border-left:0;padding-left:0;
+    border-top:2px solid var(--sun);padding-top:6px;margin-top:4px;
+    display:inline-block;}
+}
+.why-close{margin-top:26px;font-family:var(--f-disp);font-weight:800;
+  font-size:clamp(17px,2.8vw,22px);line-height:1.65;text-wrap:balance;}
+
 /* gallery */
 .gal{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px;}
 .gal figure{margin:0;background:var(--card);border:1px solid var(--rule);
@@ -396,7 +415,7 @@ strong.hi{color:var(--fg);font-weight:700;}
     <p class="kicker">東洋大学 × 成田国際空港</p>
     <h1 class="h-main">そろそろ、<br><span class="u">旅に出よう。</span></h1>
     <p class="h-sub">決まっているのは、<em>行きと帰りだけ。</em></p>
-    <p class="h-note">マレーシアで3泊4日。飛行機と、泊まるところは用意しておきます。<br><b>そのあとは、まるごとあなたの4日間です。</b></p>
+    <p class="h-note"><b>はじめての海外でも、次の1か国目でも。</b><br>行き先はマレーシア、3泊4日。飛行機と泊まるところは用意しておきます。<b>そのあとは、まるごとあなたの4日間です。</b></p>
 
     <div class="heroshot">
       <div class="frame">
@@ -415,6 +434,42 @@ strong.hi{color:var(--fg);font-weight:700;}
       <div class="board-foot">学生限定 ／ ひとりでも申し込めます ／ 初めての海外、大歓迎です</div>
     </div>
   </header>
+
+  <section class="sec bound">
+    <p class="eyebrow">なぜ、マレーシアなのか</p>
+    <h2 class="sec-h">最初の1か国目に、<br>マレーシアをすすめる理由。</h2>
+    <p class="lede">海外に行ったことがない人にとって、いちばん困るのは<span class="mark">「どこに行けばいいか分からない」</span>ことだと思います。だからこちらで決めました。理由は5つあります。</p>
+
+    <div class="why">
+      <div class="why-i">
+        <div class="h">近い</div>
+        <div class="d">直行便で<b>約7時間</b>。時差は1時間しかないので、<b>時差ボケがほとんどありません</b>。着いたその日から動けます。</div>
+        <div class="n">時差 1時間</div>
+      </div>
+      <div class="why-i">
+        <div class="h">安い</div>
+        <div class="d">物価は<b>日本の1/3〜1/2</b>。屋台のごはんが300〜500円。<b>お金の心配をしながら歩かなくていい</b>のは、初めての海外だとかなり大きいです。</div>
+        <div class="n">1食 約400円</div>
+      </div>
+      <div class="why-i">
+        <div class="h">英語が通じる</div>
+        <div class="d">アジアの中でも<b>英語がよく通じる国</b>です。駅も店も表示が英語。ペラペラである必要はありません。単語と指差しで、だいたい足ります。</div>
+        <div class="n">表示も英語</div>
+      </div>
+      <div class="why-i">
+        <div class="h">治安がいい</div>
+        <div class="d">世界平和指数<b>12位</b>（2026年）。<b>日本は9位</b>なので、そんなに変わりません。「危ないから行かない」と考える国ではないです。</div>
+        <div class="n">世界12位</div>
+      </div>
+      <div class="why-i">
+        <div class="h">1か国で3つぶん</div>
+        <div class="d">マレー系・中国系・インド系が同じ街に暮らしています。<b>モスクと中国寺院とヒンドゥー寺院が、歩ける距離に全部ある</b>。1回の旅で、3つの文化を見ることになります。</div>
+        <div class="n">3つの文化</div>
+      </div>
+    </div>
+
+    <p class="why-close">初めての海外なら、これ以上ちょうどいい国はたぶんありません。<br>もう何か国か行ったことがある人でも、<span class="mark">この混ざり方をしている国は、そう多くない</span>と思います。</p>
+  </section>
 
   <section class="sec bound">
     <p class="eyebrow">マレーシアって、どんな国？</p>
@@ -697,7 +752,7 @@ strong.hi{color:var(--fg);font-weight:700;}
   /* ヒーローは対象外。QRで開いた直後に消えている時間をつくらない */
   var SEL = [
     ".sec > .eyebrow", ".sec > .sec-h", ".sec > .lede",
-    ".gal figure", ".tri-c", ".cols > .col", ".reassure",
+    ".why-i", ".why-close", ".gal figure", ".tri-c", ".cols > .col", ".reassure",
     ".flow-s", ".mis-item", ".mis-side",
     ".expo", ".price-l", ".price-r", ".jump",
     ".cta-h", ".cta p", ".btns"
