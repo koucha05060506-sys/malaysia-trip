@@ -176,10 +176,35 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
 
 .submit{width:100%;font:inherit;font-size:18px;font-weight:800;color:var(--on-sun);
   background:var(--sun);border:0;border-radius:99px;padding:17px;cursor:pointer;
-  box-shadow:0 3px 0 rgba(120,80,0,.5);transition:transform .12s,background .12s;margin-top:4px;}
+  box-shadow:0 3px 0 rgba(120,80,0,.5);transition:transform .12s,background .12s,opacity .12s;margin-top:4px;
+  display:flex;align-items:center;justify-content:center;gap:10px;}
 .submit:hover{background:var(--sun-2);transform:translateY(-1px);}
 .submit:active{transform:translateY(1px);box-shadow:0 1px 0 rgba(120,80,0,.5);}
 .submit:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+.submit[disabled]{opacity:.72;cursor:default;transform:none;}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(58,42,0,.3);
+  border-top-color:var(--on-sun);animation:spin .7s linear infinite;display:none;}
+.submit.loading .spin{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* saved reservation banner (再訪時) */
+.saved{display:none;margin:clamp(22px,4vw,36px) 0 0;border:1px solid var(--good);
+  border-radius:var(--r);overflow:hidden;background:var(--card);box-shadow:0 6px 30px rgba(0,0,0,.10);}
+.saved.show{display:block;}
+.saved-h{background:var(--good);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px;
+  font-family:var(--f-disp);font-weight:800;font-size:17px;}
+.saved-h .dot{width:9px;height:9px;border-radius:50%;background:#fff;}
+.saved-b{padding:18px 20px;}
+.saved-b .rn{font-family:var(--f-mono);font-size:14px;color:var(--fg-mid);margin:0 0 14px;letter-spacing:.06em;}
+.saved-b .rn b{color:var(--fg);}
+.saved-b dl{margin:0 0 16px;display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-size:14.5px;}
+.saved-b dt{color:var(--fg-dim);white-space:nowrap;}
+.saved-b dd{margin:0;font-weight:700;text-align:right;}
+.saved-b .acts{display:flex;gap:10px;flex-wrap:wrap;}
+.saved-b .acts button{font:inherit;font-size:13.5px;font-weight:700;padding:10px 18px;border-radius:99px;
+  cursor:pointer;border:1px solid var(--rule-2);background:var(--card);color:var(--fg);}
+.saved-b .acts button:hover{border-color:var(--ink);}
+.saved-b .acts button.warn{color:var(--coral);border-color:var(--coral);}
 
 .demo-note{margin-top:14px;font-size:12px;color:var(--fg-dim);line-height:1.7;
   border-left:2px solid var(--rule-2);padding-left:12px;}
@@ -234,9 +259,21 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
         <dl>
           <div><dt>EXPO</dt><dd>成田 / ミニ万博</dd></div>
           <div><dt>NEXT</dt><dd>行き先を決める</dd></div>
-          <div><dt>STATUS</dt><dd style="color:var(--coral)">予約前</dd></div>
+          <div><dt>STATUS</dt><dd id="tkstatus" style="color:var(--coral)">予約前</dd></div>
         </dl>
         <span class="no" id="tkno">TICKET&nbsp;#NRT-------</span>
+      </div>
+    </div>
+
+    <div class="saved" id="saved">
+      <div class="saved-h"><span class="dot"></span>あなたの仮予約が入っています</div>
+      <div class="saved-b">
+        <p class="rn">受付番号 <b id="s-rn">—</b>　<span id="s-when" style="color:var(--fg-dim)"></span></p>
+        <dl id="s-dl"></dl>
+        <div class="acts">
+          <button type="button" id="s-edit">内容を変更する</button>
+          <button type="button" id="s-cancel" class="warn">仮予約を取り消す</button>
+        </div>
       </div>
     </div>
 
@@ -362,8 +399,10 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
             </label>
           </div>
 
-          <button type="submit" class="submit">この内容で仮予約する</button>
-          <p class="demo-note">※これは提案デモです。送信しても実際の決済・予約確定は行われず、入力内容はどこにも送信・保存されません。実運用ではフォーム送信先（予約担当）に接続します。</p>
+          <button type="submit" class="submit" id="submitBtn">
+            <span class="spin" aria-hidden="true"></span><span class="label">この内容で仮予約する</span>
+          </button>
+          <p class="demo-note">入力内容は、いまお使いのこの端末にのみ保存されます。キャンセルはいつでも無料です。</p>
         </div>
       </form>
 
@@ -372,12 +411,12 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
         <h3>仮予約を受け付けました。</h3>
         <p class="rn">受付番号 <b id="rn">NRT-MY-0000</b></p>
         <div class="summary"><dl id="sumdl"></dl></div>
-        <p class="after">この内容で、担当から3日以内にメールでご連絡します。<br>ここで確定ではありません。日程や人数は、あとから変えられます。</p>
+        <p class="after">この内容で、担当から3日以内にメールでご連絡します。<br>ここで確定ではありません。日程や人数は、このページからあとで変えられます。</p>
         <div class="btns">
           <a class="b2 solid" id="mailbtn" href="#">担当にメールで送る</a>
           <a class="b2" href="./index.html">この旅について見る</a>
         </div>
-        <p class="demo-tag">※提案デモのため、上記は実際の予約ではありません。</p>
+        <p class="demo-tag">※本ページは提案デモです。実際の予約・決済は行われません。</p>
       </div>
     </section>
 
@@ -393,75 +432,158 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
 <script>
 (function(){
   "use strict";
-
-  // チケット番号（見た目用）。読み込みごとにそれっぽく生成。
+  var KEY = "nrt_resv_v1";
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
   function rid(n){var s="";for(var i=0;i<n;i++)s+="0123456789".charAt(Math.floor(Math.random()*10));return s;}
-  document.getElementById("tkno").textContent = "TICKET #NRT-" + rid(6);
 
-  var form = document.getElementById("form");
+  function store(){ try{ return window.localStorage; }catch(e){ return null; } }
+  function load(){ var s=store(); if(!s) return null; try{ return JSON.parse(s.getItem(KEY)||"null"); }catch(e){ return null; } }
+  function save(o){ var s=store(); if(s) try{ s.setItem(KEY, JSON.stringify(o)); }catch(e){} }
+  function clear(){ var s=store(); if(s) try{ s.removeItem(KEY); }catch(e){} }
+
+  function rowsOf(r){
+    var rows = [
+      ["行き先","マレーシア 3泊4日（¥79,800〜）"],
+      ["出発", r.depart],["人数", r.people],["お名前", r.name],["連絡先", r.mail]
+    ];
+    if(r.others && r.others.length) rows.push(["他に気になる国", r.others.join("、")]);
+    if(r.liner) rows.push(["スカイライナー","案内を希望"]);
+    return rows;
+  }
+  function fillDL(el, rows){
+    el.innerHTML = rows.map(function(x){ return "<dt>"+esc(x[0])+"</dt><dd>"+esc(x[1])+"</dd>"; }).join("");
+  }
+  function mailHref(r, rows){
+    var body = "成田ミニ万博からの仮予約です。%0D%0A%0D%0A"
+      + rows.map(function(x){ return x[0]+"："+x[1]; }).join("%0D%0A")
+      + "%0D%0A受付番号：" + r.rn;
+    return "mailto:?subject=" + encodeURIComponent("【仮予約】マレーシア 3泊4日 / " + r.name) + "&body=" + body;
+  }
+  function fmtWhen(iso){
+    var d = new Date(iso);
+    if(isNaN(d)) return "";
+    var p=function(n){return (n<10?"0":"")+n;};
+    return d.getFullYear()+"/"+p(d.getMonth()+1)+"/"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
+  }
+
+  var form = $("form"), done = $("done"), saved = $("saved");
   var fields = ["depart","people","name","mail"];
-
-  function fieldEl(id){ return document.getElementById(id).closest(".field"); }
+  function fieldEl(id){ return $(id).closest(".field"); }
   function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-
   function check(id){
-    var el = document.getElementById(id), v = el.value.trim(), ok = !!v;
-    if(id === "mail") ok = validEmail(v);
+    var v=$(id).value.trim(), ok=!!v;
+    if(id==="mail") ok=validEmail(v);
     fieldEl(id).classList.toggle("invalid", !ok);
     return ok;
   }
   fields.forEach(function(id){
-    document.getElementById(id).addEventListener("input", function(){
-      if(fieldEl(id).classList.contains("invalid")) check(id);
-    });
-    document.getElementById(id).addEventListener("blur", function(){ check(id); });
+    $(id).addEventListener("input", function(){ if(fieldEl(id).classList.contains("invalid")) check(id); });
+    $(id).addEventListener("blur", function(){ check(id); });
   });
 
+  // ---- 表示状態の切り替え ----
+  function showConfirmed(r){
+    var rows = rowsOf(r);
+    $("rn").textContent = r.rn;
+    fillDL($("sumdl"), rows);
+    $("mailbtn").href = mailHref(r, rows);
+    $("tkno").textContent = "TICKET #" + r.rn;
+    $("tkstatus").textContent = "仮予約済み";
+    $("tkstatus").style.color = "var(--good)";
+    form.style.display = "none";
+    saved.classList.remove("show");
+    done.classList.add("show");
+  }
+  function showSavedBanner(r){
+    var rows = rowsOf(r);
+    $("s-rn").textContent = r.rn;
+    $("s-when").textContent = r.when ? "（"+fmtWhen(r.when)+" 受付）" : "";
+    fillDL($("s-dl"), rows);
+    $("tkno").textContent = "TICKET #" + r.rn;
+    $("tkstatus").textContent = "仮予約済み";
+    $("tkstatus").style.color = "var(--good)";
+    saved.classList.add("show");
+    form.style.display = "none";
+    done.classList.remove("show");
+  }
+  function showForm(prefill){
+    saved.classList.remove("show");
+    done.classList.remove("show");
+    form.style.display = "";
+    if(prefill){
+      $("depart").value = prefill.depart || "";
+      $("people").value = prefill.people || "";
+      $("name").value   = prefill.name || "";
+      $("mail").value   = prefill.mail || "";
+      $("liner").checked = !!prefill.liner;
+      (prefill.others||[]).forEach(function(v){
+        var cb = Array.prototype.slice.call(document.querySelectorAll(".chip input"))
+                  .filter(function(c){ return c.value===v; })[0];
+        if(cb) cb.checked = true;
+      });
+    }
+  }
+
+  // ---- 初期化：保存済みがあれば復元 ----
+  var existing = load();
+  if(existing && existing.rn){
+    showSavedBanner(existing);
+    var nav = document.querySelector(".top .nav-btn");
+    if(nav){ nav.textContent = "予約を確認 ↓"; }
+  } else {
+    $("tkno").textContent = "TICKET #NRT-" + rid(6);
+  }
+
+  // ---- 送信（本物っぽい間を入れる） ----
+  var btn = $("submitBtn");
   form.addEventListener("submit", function(e){
     e.preventDefault();
-    var allOk = true, firstBad = null;
-    fields.forEach(function(id){ if(!check(id)){ allOk = false; if(!firstBad) firstBad = id; } });
-    if(!allOk){ document.getElementById(firstBad).focus(); return; }
+    if(btn.classList.contains("loading")) return;
+    var ok=true, bad=null;
+    fields.forEach(function(id){ if(!check(id)){ ok=false; if(!bad) bad=id; } });
+    if(!ok){ $(bad).focus(); return; }
 
-    var depart = document.getElementById("depart").value;
-    var people = document.getElementById("people").value;
-    var name   = document.getElementById("name").value.trim();
-    var mail   = document.getElementById("mail").value.trim();
-    var liner  = document.getElementById("liner").checked;
-    var others = Array.prototype.slice.call(document.querySelectorAll(".chip input:checked"))
-                  .map(function(c){ return c.value; });
+    btn.classList.add("loading"); btn.disabled = true;
+    btn.querySelector(".label").textContent = "確認しています…";
 
-    var rn = "NRT-MY-" + rid(4);
-    document.getElementById("rn").textContent = rn;
+    var r = {
+      rn: "NRT-MY-" + rid(4),
+      when: new Date().toISOString(),
+      depart: $("depart").value,
+      people: $("people").value,
+      name: $("name").value.trim(),
+      mail: $("mail").value.trim(),
+      liner: $("liner").checked,
+      others: Array.prototype.slice.call(document.querySelectorAll(".chip input:checked")).map(function(c){return c.value;})
+    };
 
-    var rows = [
-      ["行き先", "マレーシア 3泊4日（¥79,800〜）"],
-      ["出発", depart],
-      ["人数", people],
-      ["お名前", name],
-      ["連絡先", mail]
-    ];
-    if(others.length) rows.push(["他に気になる国", others.join("、")]);
-    if(liner) rows.push(["スカイライナー", "案内を希望"]);
+    // 本物の予約サイトの「送信中」の間。ここで実運用では fetch(送信先) する。
+    setTimeout(function(){
+      save(r);
+      btn.classList.remove("loading"); btn.disabled = false;
+      btn.querySelector(".label").textContent = "この内容で仮予約する";
+      showConfirmed(r);
+      done.scrollIntoView({behavior:"smooth", block:"start"});
+    }, 1300);
+  });
 
-    var dl = document.getElementById("sumdl");
-    dl.innerHTML = rows.map(function(r){
-      return "<dt>"+r[0]+"</dt><dd>"+r[1].replace(/</g,"&lt;")+"</dd>";
-    }).join("");
-
-    // メール下書き（本当に送りたい人向けの現実的な出口）
-    var body = "成田ミニ万博からの仮予約です。%0D%0A%0D%0A"
-      + rows.map(function(r){ return r[0]+"："+r[1]; }).join("%0D%0A")
-      + "%0D%0A受付番号：" + rn;
-    document.getElementById("mailbtn").href =
-      "mailto:?subject=" + encodeURIComponent("【仮予約】マレーシア 3泊4日 / " + name)
-      + "&body=" + body;
-
-    form.style.display = "none";
-    var done = document.getElementById("done");
-    done.classList.add("show");
-    document.getElementById("tkno").textContent = "TICKET #" + rn;
-    done.scrollIntoView({behavior:"smooth", block:"start"});
+  // ---- 変更・取り消し ----
+  $("s-edit").addEventListener("click", function(){
+    showForm(load());
+    form.scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  $("s-cancel").addEventListener("click", function(){
+    if(!window.confirm("仮予約を取り消します。よろしいですか？")) return;
+    clear();
+    $("tkstatus").textContent = "予約前";
+    $("tkstatus").style.color = "var(--coral)";
+    $("tkno").textContent = "TICKET #NRT-" + rid(6);
+    var nav = document.querySelector(".top .nav-btn");
+    if(nav){ nav.textContent = "予約にすすむ ↓"; }
+    showForm(null);
+    form.reset();
+    document.querySelector(".stub").scrollIntoView({behavior:"smooth", block:"start"});
   });
 })();
 </script>
