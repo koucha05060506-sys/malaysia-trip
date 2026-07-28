@@ -117,15 +117,18 @@ b.hi{color:var(--fg);}
 .recap{display:grid;grid-template-columns:1fr;gap:14px;margin-top:26px;}
 .rc{border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--card);
   display:grid;grid-template-columns:132px 1fr;}
-.rc .ph{background:var(--card-2);overflow:hidden;}
-.rc .ph img{width:100%;height:100%;object-fit:cover;min-height:118px;}
+.rc .ph{background:var(--card-2);overflow:hidden;min-height:120px;}
+.rc .ph img{width:100%;height:100%;object-fit:cover;display:block;}
 .rc .bd{padding:16px 18px;}
 .rc .bd .t{font-family:var(--f-disp);font-weight:800;font-size:18px;line-height:1.45;margin:0 0 5px;
-  display:flex;align-items:baseline;gap:9px;}
+  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
 .rc .bd .t .s{font-family:var(--f-mono);font-size:11px;color:var(--coral);letter-spacing:.1em;}
 .rc .bd p{margin:0;font-size:14.5px;line-height:1.8;color:var(--fg-mid);}
 .rc .bd p b{color:var(--fg);}
-@media (max-width:520px){.rc{grid-template-columns:1fr;}.rc .ph img{min-height:150px;}}
+@media (max-width:520px){
+  .rc{grid-template-columns:1fr;}
+  .rc .ph{min-height:0;aspect-ratio:16/9;}
+}
 
 .recall{margin-top:22px;background:var(--card-2);border-radius:var(--r);
   padding:20px 22px;font-family:var(--f-disp);font-weight:800;font-size:clamp(17px,2.6vw,21px);
@@ -309,19 +312,8 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
       <p class="recall">「行きたい」と「大丈夫」が、さっき同時にそろいました。<br><span>——あとは、決めるだけです。</span></p>
     </section>
 
-    <section class="sec">
-      <p class="eyebrow"><span class="n">02</span> まだ迷っているなら</p>
-      <h2 class="sec-h">もう一度、行き先を選びなおせます。</h2>
-      <p class="lede">気分から具体的な場所を出すページを、そのまま持ち帰れます。「どこに行くか」から考えたい人はこちらへ。決まっている人は、下の予約へどうぞ。</p>
-      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="./plan.html" style="display:inline-flex;align-items:center;gap:9px;background:var(--card);
-          border:1px solid var(--rule-2);color:var(--fg);text-decoration:none;font-weight:800;font-size:16px;
-          padding:14px 22px;border-radius:99px;">🗺 行き先を考える</a>
-      </div>
-    </section>
-
     <section class="sec" id="resv">
-      <p class="eyebrow"><span class="n">03</span> 予約する</p>
+      <p class="eyebrow"><span class="n">02</span> 予約する</p>
       <h2 class="sec-h">その続きを、ここで。</h2>
       <p class="lede">今日の体験の、自然な続きです。まだ確定ではありません。<b class="hi">仮予約</b>を入れておくと、席が埋まる前に案内が届きます。</p>
 
@@ -411,7 +403,6 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
         <p class="after">この内容で、担当から3日以内にメールでご連絡します。<br>ここで確定ではありません。日程や人数は、このページからあとで変えられます。</p>
         <div class="btns">
           <a class="b2 solid" id="mailbtn" href="#">担当にメールで送る</a>
-          <a class="b2" href="./plan.html">行き先をもう一度見る</a>
         </div>
         <p class="demo-tag">※本ページは提案デモです。実際の予約・決済は行われません。</p>
       </div>
