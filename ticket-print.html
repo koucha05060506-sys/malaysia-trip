@@ -1,0 +1,111 @@
+<title>成田ミニ万博 参加チケット（印刷用）</title>
+
+<style>
+:root{
+  --paper:#F6F6F4;--card:#FFFFFF;--fg:#111112;--fg-mid:#55555A;--fg-dim:#8B8B90;
+  --rule:#E3E3DE;--sun:#FFC020;--coral:#E5432F;--ink:#111112;
+  --f-disp:"Hiragino Kaku Gothic ProN","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;
+  --f-mono:ui-monospace,"SFMono-Regular","SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#0B0B0D;--card:#161618;--fg:#F4F4F2;--fg-mid:#B3B3AF;--fg-dim:#89898B;
+        --rule:#2D2D31;--sun:#FFC940;--coral:#FF7A63;--ink:#F4F4F2;}
+}
+:root[data-theme="dark"]{--paper:#0B0B0D;--card:#161618;--fg:#F4F4F2;--fg-mid:#B3B3AF;
+  --fg-dim:#89898B;--rule:#2D2D31;--sun:#FFC940;--coral:#FF7A63;--ink:#F4F4F2;}
+:root[data-theme="light"]{--paper:#F6F6F4;--card:#FFFFFF;--fg:#111112;--fg-mid:#55555A;
+  --fg-dim:#8B8B90;--rule:#E3E3DE;--sun:#FFC020;--coral:#E5432F;--ink:#111112;}
+
+*{box-sizing:border-box;}
+img{display:block;max-width:100%;}
+.wrap{background:var(--paper);color:var(--fg);font-family:var(--f-disp);
+  line-height:1.8;font-size:15px;-webkit-font-smoothing:antialiased;}
+.bound{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,48px) clamp(16px,4vw,40px) 56px;}
+h1.pg{font-weight:800;font-size:clamp(21px,4vw,30px);margin:0 0 8px;}
+.pg-sub{margin:0 0 26px;color:var(--fg-mid);font-size:14.5px;max-width:40em;}
+.note{border-left:3px solid var(--sun);padding:8px 0 8px 15px;margin:0 0 30px;
+  font-size:13.5px;color:var(--fg-mid);line-height:1.8;}
+.note b{color:var(--fg);}
+
+/* ---- the ticket ---- */
+.ticket{background:#FFFFFF;color:#111112;border-radius:16px;overflow:hidden;
+  border:1px solid #E3E3DE;box-shadow:0 8px 34px rgba(0,0,0,.13);
+  display:grid;grid-template-columns:1fr 250px;}
+.tk-l{padding:30px 30px 26px;background:#111112;color:#FFFFFF;position:relative;}
+.tk-l .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.24em;color:var(--sun);margin:0 0 16px;}
+.tk-l h2{font-family:var(--f-disp);font-weight:800;font-size:26px;line-height:1.3;margin:0 0 12px;letter-spacing:-.01em;}
+.tk-l p{margin:0 0 20px;font-size:14px;color:rgba(255,255,255,.82);line-height:1.75;max-width:24em;}
+.tk-l .steps{display:flex;flex-direction:column;gap:9px;margin:0;padding:0;list-style:none;}
+.tk-l .steps li{display:grid;grid-template-columns:26px 1fr;gap:11px;align-items:center;font-size:13.5px;}
+.tk-l .steps b{width:26px;height:26px;border-radius:50%;background:var(--sun);color:#3A2A00;
+  display:grid;place-items:center;font-weight:800;font-size:13px;}
+.tk-l .foot{position:absolute;left:30px;bottom:20px;font-family:var(--f-mono);
+  font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.5);}
+
+/* perforation */
+.tk-r{position:relative;background:#FFFFFF;padding:26px 24px;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  border-left:2px dashed #C9C9C4;}
+.tk-r::before,.tk-r::after{content:"";position:absolute;left:-11px;width:20px;height:20px;
+  border-radius:50%;background:var(--paper);}
+.tk-r::before{top:-11px;}.tk-r::after{bottom:-11px;}
+.tk-r .qrlabel{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;color:#8B8B90;margin:0 0 12px;}
+.tk-r .qrbox{width:180px;height:180px;background:#FFFFFF;padding:8px;border-radius:8px;}
+.tk-r .qrbox img{width:100%;height:100%;image-rendering:pixelated;}
+.tk-r .scan{margin:14px 0 0;font-weight:800;font-size:15px;color:#111112;line-height:1.5;}
+.tk-r .scan small{display:block;font-weight:400;font-size:12px;color:#55555A;margin-top:4px;}
+
+@media (max-width:600px){
+  .ticket{grid-template-columns:1fr;}
+  .tk-r{border-left:0;border-top:2px dashed #C9C9C4;}
+  .tk-r::before{top:-11px;left:calc(50% - 10px);}
+  .tk-r::after{bottom:auto;top:-11px;left:auto;right:calc(50% - 10px);}
+  .tk-l .foot{position:static;margin-top:18px;}
+}
+
+.spec{margin-top:32px;border-top:1px solid var(--rule);padding-top:20px;
+  font-size:13px;color:var(--fg-mid);line-height:1.9;}
+.spec code{font-family:var(--f-mono);font-size:11px;color:var(--fg-dim);word-break:break-all;}
+
+@media print{
+  .wrap{background:#FFFFFF;}
+  h1.pg,.pg-sub,.note,.spec{display:none;}
+  .bound{padding:0;max-width:none;}
+  .ticket{box-shadow:none;border:1px solid #999;break-inside:avoid;}
+  .tk-r::before,.tk-r::after{background:#FFFFFF;}
+}
+</style>
+
+<div class="wrap"><div class="bound">
+
+  <h1 class="pg">成田ミニ万博 参加チケット（印刷用）</h1>
+  <p class="pg-sub">会場で配る紙です。切り取り線でQRの半券を切り離せます。来場者はこのQRを読むと、体験の復習と予約ページに進めます。</p>
+  <div class="note">
+    <b>印刷して使えます。</b>ブラウザの印刷（Ctrl/⌘+P）で、この説明文は自動で隠れ、チケット部分だけが出ます。名刺〜はがきサイズを想定。印刷前に、必ずQRを実機でスキャンして確認してください。
+  </div>
+
+  <div class="ticket">
+    <div class="tk-l">
+      <p class="k">NARITA MINI EXPO ・ ADMIT ONE</p>
+      <h2>そろそろ、<br>旅に出よう。</h2>
+      <p>今日、五感でマレーシアを歩きました。「いいな」と思ったその気持ちが、いちばん新しいうちに。</p>
+      <ul class="steps">
+        <li><b>1</b><span>右のQRを読み取る</span></li>
+        <li><b>2</b><span>体験を振り返る</span></li>
+        <li><b>3</b><span>そのまま予約にすすむ</span></li>
+      </ul>
+      <div class="foot">TOYO UNIV. MORISHITA SEMINAR / TEAM A</div>
+    </div>
+    <div class="tk-r">
+      <p class="qrlabel">SCAN TO CONTINUE</p>
+      <div class="qrbox"><img src="data:image/png;base64,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" alt="予約ページへのQRコード"></div>
+      <p class="scan">読み取って、続きへ<small>行き先の相談も、予約もここから</small></p>
+    </div>
+  </div>
+
+  <div class="spec">
+    QRの遷移先：<code>koucha05060506-sys.github.io/malaysia-trip/ticket.html</code><br>
+    誤り訂正レベル H ／ デコード検証済み（読み取り結果がURLと一致することを確認）
+  </div>
+
+</div></div>
