@@ -131,8 +131,22 @@ b.hi{color:var(--fg);}
   line-height:1.6;text-wrap:balance;}
 .recall span{color:var(--coral);}
 
+/* 気分バー */
+.moodbar{display:flex;gap:8px;margin-top:20px;overflow-x:auto;padding-bottom:4px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.moodbar::-webkit-scrollbar{display:none;}
+.moodchip{flex:none;font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  border:1px solid var(--rule-2);background:var(--card);color:var(--fg);
+  border-radius:99px;padding:9px 15px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;
+  transition:background .12s,border-color .12s,color .12s;}
+.moodchip:hover{border-color:var(--ink);}
+.moodchip[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink);}
+.moodchip:focus-visible{outline:2px solid var(--sun);outline-offset:2px;}
+.moodhint{margin:12px 0 0;font-size:14px;color:var(--fg-mid);}
+.moodhint b{color:var(--fg);}
+
 /* 7カ国の選択グリッド */
-.countries{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;}
+.countries{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
 @media (min-width:620px){.countries{grid-template-columns:1fr 1fr 1fr;}}
 .cc{position:relative;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;
   background:var(--card);text-align:left;cursor:pointer;padding:0;font:inherit;color:inherit;
@@ -162,6 +176,55 @@ b.hi{color:var(--fg);}
   border:1px solid var(--rule-2);border-radius:99px;padding:6px 12px;white-space:nowrap;}
 .cc.sel .go{background:var(--ink);color:var(--on-ink);border-color:var(--ink);}
 .cc.sel .go::before{content:"✓ ";}
+
+/* 国の深掘りパネル（オーバーレイ） */
+.panel-ov{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);
+  display:flex;align-items:flex-end;justify-content:center;padding:0;
+  opacity:0;visibility:hidden;transition:opacity .22s ease;}
+.panel-ov.open{opacity:1;visibility:visible;}
+@media (min-width:660px){.panel-ov{align-items:center;padding:24px;}}
+.panel{background:var(--paper);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;
+  border-radius:18px 18px 0 0;transform:translateY(24px);transition:transform .26s cubic-bezier(.2,.7,.3,1);
+  -webkit-overflow-scrolling:touch;}
+@media (min-width:660px){.panel{border-radius:16px;}}
+.panel-ov.open .panel{transform:none;}
+.panel-hero{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--card-2);}
+.panel-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+.panel-hero::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(transparent 40%,rgba(0,0,0,.75));}
+.panel-hero .cap{position:absolute;left:18px;right:18px;bottom:14px;color:#fff;}
+.panel-hero .cap .fl{font-size:26px;line-height:1;filter:drop-shadow(0 1px 4px rgba(0,0,0,.6));}
+.panel-hero .cap .nm{font-family:var(--f-disp);font-weight:800;font-size:clamp(22px,5vw,30px);
+  line-height:1.2;margin:4px 0 0;text-shadow:0 2px 12px rgba(0,0,0,.6);}
+.panel-hero .cap .pk{font-size:12.5px;font-weight:700;opacity:.95;margin-top:4px;
+  text-shadow:0 1px 8px rgba(0,0,0,.7);}
+.panel-close{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;
+  border:0;background:rgba(0,0,0,.5);color:#fff;font-size:20px;cursor:pointer;line-height:1;
+  display:grid;place-items:center;}
+.panel-close:focus-visible{outline:3px solid var(--sun);outline-offset:2px;}
+.panel-b{padding:18px;}
+.panel-b .lead{margin:0 0 16px;font-size:14px;color:var(--fg-mid);line-height:1.7;}
+.panel-b .lead b{color:var(--fg);}
+.facets{display:grid;grid-template-columns:1fr;gap:9px;}
+@media (min-width:520px){.facets{grid-template-columns:1fr 1fr;}}
+.facet{border:1px solid var(--rule);border-radius:10px;padding:13px 15px;background:var(--card);}
+.facet.hot{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);}
+.facet .fh{display:flex;align-items:center;gap:8px;margin:0 0 5px;}
+.facet .fh .fe{font-size:16px;line-height:1;}
+.facet .fh .fl{font-family:var(--f-disp);font-weight:800;font-size:14.5px;}
+.facet .fh .tag{margin-left:auto;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;
+  color:var(--ink);background:var(--ink-pale);border-radius:99px;padding:2px 7px;}
+.facet p{margin:0;font-size:13px;line-height:1.7;color:var(--fg-mid);}
+.panel-cta{position:sticky;bottom:0;background:var(--paper);padding:14px 18px 18px;
+  border-top:1px solid var(--rule);display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.panel-cta .pr{font-family:var(--f-disp);font-weight:800;font-size:17px;color:var(--coral);}
+.panel-cta .pr small{font-weight:400;font-size:11px;color:var(--fg-dim);}
+.panel-cta button{margin-left:auto;font:inherit;font-size:16px;font-weight:800;color:var(--on-sun);
+  background:var(--sun);border:0;border-radius:99px;padding:14px 24px;cursor:pointer;
+  box-shadow:0 3px 0 rgba(120,80,0,.5);}
+.panel-cta button:hover{background:var(--sun-2);}
+.panel-cta button:focus-visible{outline:3px solid var(--ink);outline-offset:2px;}
+body.noscroll{overflow:hidden;}
 
 /* reservation */
 .resv{border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;margin-top:26px;background:var(--card);}
@@ -342,10 +405,12 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     </section>
 
     <section class="sec" id="pick">
-      <p class="eyebrow"><span class="n">02</span> 行き先を選ぶ</p>
-      <h2 class="sec-h">7つの国は、ぜんぶ<br>「近い・安い・安全」で選びました。</h2>
-      <p class="lede">成田から<b class="hi">フライト8時間以内・時差2時間以内・治安のいい国</b>だけを残しています。どれも<b class="hi">航空券と宿がセットの3泊4日プラン</b>。あとは、気になった国を選ぶだけです。</p>
+      <p class="eyebrow"><span class="n">02</span> 気分から、国を選ぶ</p>
+      <h2 class="sec-h">やりたいこと（気分）から、<br>行きたい国が見つかります。</h2>
+      <p class="lede">まず<b class="hi">気分</b>を選んでください。7つの国が、その気分で見えてきます。気になった国をひらくと、<b class="hi">その国の残り全部の楽しみ方</b>まで分かります。どれも<b class="hi">航空券＋宿込みの3泊4日</b>です。</p>
 
+      <div class="moodbar" id="moods"></div>
+      <p class="moodhint" id="moodhint"></p>
       <div class="countries" id="countries"></div>
     </section>
 
@@ -364,7 +429,7 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
           <div class="field">
             <label>行き先<span class="req">必須</span></label>
             <div class="plan-pick" id="chosen">
-              <div class="nm" id="chosen-nm">まだ選んでいません<small id="chosen-sub">上の「行き先を選ぶ」から、国を選んでください</small></div>
+              <div class="nm" id="chosen-nm">まだ選んでいません<small id="chosen-sub">上の「気分から、国を選ぶ」から、国を選んでください</small></div>
               <div class="pr" id="chosen-pr"></div>
             </div>
             <a href="#pick" class="hint" id="rechoose" style="display:inline-block;color:var(--ink);font-weight:700;">↑ 国を選ぶ／選びなおす</a>
@@ -434,6 +499,28 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
       </div>
     </section>
 
+    <div class="panel-ov" id="panel" aria-hidden="true">
+      <div class="panel" role="dialog" aria-modal="true" aria-labelledby="panel-name">
+        <div class="panel-hero">
+          <button class="panel-close" id="panel-close" type="button" aria-label="閉じる">×</button>
+          <img id="panel-img" src="" alt="">
+          <div class="cap">
+            <span class="fl" id="panel-fl"></span>
+            <p class="nm" id="panel-name"></p>
+            <p class="pk">🧳 3泊4日 ／ 航空券＋宿込み</p>
+          </div>
+        </div>
+        <div class="panel-b">
+          <p class="lead" id="panel-lead"></p>
+          <div class="facets" id="panel-facets"></div>
+        </div>
+        <div class="panel-cta">
+          <span class="pr" id="panel-pr"></span>
+          <button type="button" id="panel-reserve">この国で予約する →</button>
+        </div>
+      </div>
+    </div>
+
     <footer class="foot">
       成田ミニ万博 → 予約ページ（提案デモ）。<br>
       本ページは東洋大学 森下ゼミによる企画提案です。掲載の価格・日程・内容は検討段階のもので、実際に販売している商品ではありません。<br>
@@ -478,40 +565,170 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
   ];
   function byId(id){ for(var i=0;i<COUNTRIES.length;i++) if(COUNTRIES[i].id===id) return COUNTRIES[i]; return null; }
 
-  var selected = null; // 選択中の国ID
+  // ---- 7つの気分 ----
+  var MOODS = [
+    {id:"eat",   l:"食",         e:"🍜"},
+    {id:"photo", l:"映え写真",   e:"📷"},
+    {id:"relax", l:"のんびり",   e:"🌿"},
+    {id:"walk",  l:"街ブラ",     e:"👟"},
+    {id:"diff",  l:"日本との違い",e:"🗾"},
+    {id:"shop",  l:"買い物",     e:"🛍"},
+    {id:"thrill",l:"刺激",       e:"🔥"}
+  ];
+  function moodById(id){ for(var i=0;i<MOODS.length;i++) if(MOODS[i].id===id) return MOODS[i]; return null; }
+
+  // ---- 7カ国 × 7気分（各国の楽しみ方） ----
+  var FACETS = {
+    MY:{eat:"ナシレマ、ロティチャナイ、肉骨茶（バクテー）。屋台なら1食400円ほど。",
+        photo:"バトゥ洞窟の虹色の階段272段、ツインタワーの夜景。",
+        relax:"KLCC公園の芝生でのんびり。コピティアムで甘いテ・タレ。",
+        walk:"チャイナタウンの路地、壁アートの鬼仔巷を食べ歩き。",
+        diff:"マレー・中国・インドが同じ街に。モスクと寺院が隣同士。",
+        shop:"セントラルマーケットでバティックや錫細工のおみやげ。",
+        thrill:"深夜まで人が絶えないジャラン・アロー。熱帯の夜の熱気。"},
+    KR:{eat:"サムギョプサル、トッポッキ、屋台のホットク。",
+        photo:"景福宮で韓服（ハンボク）、カラフルな壁画村。",
+        relax:"漢江でピクニック、チムジルバン（韓国サウナ）でだらり。",
+        walk:"弘大（ホンデ）や聖水洞のカフェ通りをぶらぶら。",
+        diff:"24時間動く街、広い地下街、深いカフェ文化。",
+        shop:"明洞のコスメ、東大門の夜通しの市場。",
+        thrill:"眠らないソウルの夜。ライブとK-POPの熱。"},
+    TH:{eat:"パッタイ、トムヤムクン、屋台のカオニャオマムアン。",
+        photo:"川ぞいに立つ白いワット・アルン、水上マーケット。",
+        relax:"静かな寺院、タイ古式マッサージで整う。",
+        walk:"バンコクの路地、巨大なチャトチャック市場。",
+        diff:"金ぴかの寺院、トゥクトゥク、微笑みの国のゆるさ。",
+        shop:"市場で値切り、ナイトバザールをはしご。",
+        thrill:"カオサン通りの夜、川と船の喧騒。"},
+    VN:{eat:"フォー、バインミー、練乳のベトナムコーヒー。",
+        photo:"ハロン湾の奇岩、ランタンがともる古都ホイアン。",
+        relax:"湖畔のカフェで、ゆっくり流れる時間。",
+        walk:"ハノイ旧市街。バイクの波を、えいっと渡る。",
+        diff:"街を埋めるバイクの数、フランス植民地の面影。",
+        shop:"市場の刺繍、ベトナム雑貨やコーヒー豆。",
+        thrill:"何万台ものバイク。路地に満ちる熱気。"},
+    GU:{eat:"チャモロ料理、分厚いステーキ、南国フルーツ。",
+        photo:"タモン湾のエメラルドの海、恋人岬。",
+        relax:"白い砂浜で一日。リゾートのプールでだらり。",
+        walk:"タモンのショッピング通りをのんびり歩く。",
+        diff:"アメリカなのに3時間半。英語とドルの世界。",
+        shop:"免税店、アウトレットでまとめ買い。",
+        thrill:"パラセーリングやシュノーケルのマリンスポーツ。"},
+    TW:{eat:"小籠包、魯肉飯、タピオカ、夜市のB級グルメ。",
+        photo:"九份の赤いランタン、台北101、極彩色の廟。",
+        relax:"北投の温泉、茶芸館でお茶をゆっくり。",
+        walk:"問屋街の迪化街、夜市を食べ歩き。",
+        diff:"親日的で日本語も少し通じる。濃い屋台文化。",
+        shop:"夜市の雑貨、おみやげのパイナップルケーキ。",
+        thrill:"熱気あふれる夜市。原付の波と屋台の煙。"},
+    PH:{eat:"アドボ、シニガン、豚の丸焼きレチョン、南国フルーツ。",
+        photo:"エルニドの入り江、透きとおる海と白い砂。",
+        relax:"ビーチのハンモックで、島時間にとける。",
+        walk:"マニラの旧市街イントラムロスを歩く。",
+        diff:"英語が公用語。島が7000以上ある海の国。",
+        shop:"市場、真珠や貝細工のアクセサリー。",
+        thrill:"アイランドホッピング、透明な海でダイビング。"}
+  };
+
+  var selected = null;   // 予約で選択中の国ID
+  var activeMood = null; // 選んでいる気分ID（nullはおすすめ）
+  var panelId = null;    // パネルで開いている国ID
+
+  // ---- 気分チップ描画 ----
+  var moodbar = $("moods");
+  MOODS.forEach(function(m){
+    var b=document.createElement("button");
+    b.type="button"; b.className="moodchip"; b.dataset.mood=m.id;
+    b.setAttribute("aria-pressed","false");
+    b.innerHTML='<span>'+m.e+'</span>'+esc(m.l);
+    b.addEventListener("click", function(){ setMood(activeMood===m.id ? null : m.id); });
+    moodbar.appendChild(b);
+  });
+
+  function setMood(id){
+    activeMood = id;
+    Array.prototype.forEach.call(moodbar.children, function(el){
+      el.setAttribute("aria-pressed", el.dataset.mood===id ? "true":"false");
+    });
+    var hint=$("moodhint");
+    if(id){
+      var m=moodById(id);
+      hint.innerHTML='<b>'+m.e+' '+esc(m.l)+'</b>で見ています。国をひらくと、ほかの楽しみ方も分かります。';
+    } else {
+      hint.innerHTML='気分を選ぶと、7つの国がその目線で見えてきます。';
+    }
+    renderCards();
+  }
 
   // ---- カード描画 ----
   var wrap = $("countries");
-  COUNTRIES.forEach(function(c){
-    var b = document.createElement("button");
-    b.type="button"; b.className="cc"; b.dataset.id=c.id;
-    b.setAttribute("aria-pressed","false");
-    b.innerHTML =
-      '<div class="ph"><span class="fl">'+c.fl+'</span><img loading="lazy" src="'+c.img+'" alt="'+esc(c.jp)+'の風景"></div>'
-     +'<div class="bd"><p class="nm">'+esc(c.jp)+'</p><p class="en">'+esc(c.en)+'</p>'
-     +'<p class="pkg">🧳 '+PKG+'</p>'
-     +'<p class="ap">'+esc(c.ap)+'</p>'
-     +'<div class="meta"><span>✈ <b>'+esc(c.flight)+'</b></span><span>🕐 <b>'+esc(c.tz)+'</b></span></div>'
-     +'<div class="pick"><span class="pr">'+esc(c.price)+(c.id==="MY"?'':' <small>から相談</small>')+'</span>'
-     +'<span class="go">この国にする</span></div></div>';
-    b.addEventListener("click", function(){ selectCountry(c.id, true); });
-    wrap.appendChild(b);
+  function renderCards(){
+    wrap.innerHTML="";
+    COUNTRIES.forEach(function(c){
+      var line = activeMood ? FACETS[c.id][activeMood] : c.ap;
+      var b=document.createElement("button");
+      b.type="button"; b.className="cc"+(c.id===selected?" sel":""); b.dataset.id=c.id;
+      b.setAttribute("aria-pressed", c.id===selected?"true":"false");
+      b.innerHTML =
+        '<div class="ph"><span class="fl">'+c.fl+'</span><img loading="lazy" src="'+c.img+'" alt="'+esc(c.jp)+'の風景"></div>'
+       +'<div class="bd"><p class="nm">'+esc(c.jp)+'</p><p class="en">'+esc(c.en)+'</p>'
+       +'<p class="pkg">🧳 '+PKG+'</p>'
+       +'<p class="ap">'+esc(line)+'</p>'
+       +'<div class="meta"><span>✈ <b>'+esc(c.flight)+'</b></span><span>🕐 <b>'+esc(c.tz)+'</b></span></div>'
+       +'<div class="pick"><span class="pr">'+esc(c.price)+(c.id==="MY"?'':' <small>から相談</small>')+'</span>'
+       +'<span class="go">'+(c.id===selected?'選択中':'ひらいて見る')+'</span></div></div>';
+      b.addEventListener("click", function(){ openPanel(c.id); });
+      wrap.appendChild(b);
+    });
+  }
+
+  // ---- 国の深掘りパネル ----
+  var panel=$("panel");
+  function openPanel(id){
+    panelId=id;
+    var c=byId(id);
+    $("panel-img").src=c.img; $("panel-img").alt=esc(c.jp)+"の風景";
+    $("panel-fl").textContent=c.fl;
+    $("panel-name").textContent=c.jp;
+    $("panel-pr").innerHTML=esc(c.price)+(c.id==="MY"?'':' <small>から相談</small>');
+    var m = activeMood ? moodById(activeMood) : null;
+    $("panel-lead").innerHTML = m
+      ? '<b>'+m.e+' '+esc(m.l)+'</b>で、この国にたどり着きました。ほかの楽しみ方も、ぜんぶ見てみましょう。'
+      : 'この国の楽しみ方を、気分ごとに。気になったら、そのまま予約へ。';
+    $("panel-facets").innerHTML = MOODS.map(function(mo){
+      var hot = activeMood===mo.id ? " hot" : "";
+      var tag = activeMood===mo.id ? '<span class="tag">この気分で来た</span>' : '';
+      return '<div class="facet'+hot+'"><div class="fh"><span class="fe">'+mo.e+'</span>'
+        +'<span class="fl">'+esc(mo.l)+'</span>'+tag+'</div><p>'+esc(FACETS[id][mo.id])+'</p></div>';
+    }).join("");
+    panel.classList.add("open"); panel.setAttribute("aria-hidden","false");
+    document.body.classList.add("noscroll");
+    $("panel-close").focus();
+  }
+  function closePanel(){
+    panel.classList.remove("open"); panel.setAttribute("aria-hidden","true");
+    document.body.classList.remove("noscroll");
+  }
+  $("panel-close").addEventListener("click", closePanel);
+  panel.addEventListener("click", function(e){ if(e.target===panel) closePanel(); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape" && panel.classList.contains("open")) closePanel(); });
+  $("panel-reserve").addEventListener("click", function(){
+    if(panelId){ selectCountry(panelId, false); }
+    closePanel();
+    $("resv").scrollIntoView({behavior:"smooth", block:"start"});
   });
 
   function selectCountry(id, scroll){
     selected = id;
-    Array.prototype.forEach.call(wrap.children, function(el){
-      var on = el.dataset.id===id;
-      el.classList.toggle("sel", on);
-      el.setAttribute("aria-pressed", on?"true":"false");
-      el.querySelector(".go").textContent = on ? "選択中" : "この国にする";
-    });
+    renderCards();
     var c = byId(id);
     $("chosen-nm").innerHTML = esc(c.jp)+' 3泊4日<small>航空券＋宿込み'+(c.id==="MY"?"・9月出発":"")+'</small>';
     $("chosen-pr").textContent = c.price;
     $("chosen").closest(".field").classList.remove("invalid");
     if(scroll){ $("resv").scrollIntoView({behavior:"smooth", block:"start"}); }
   }
+
+  setMood(null); // 初期描画
 
   // ---- 保存 ----
   function store(){ try{ return window.localStorage; }catch(e){ return null; } }
@@ -654,9 +871,8 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     var nav=document.querySelector(".top .nav-btn");
     if(nav){ nav.textContent="予約にすすむ ↓"; }
     showForm(null); form.reset();
-    selected=null;
-    Array.prototype.forEach.call(wrap.children, function(el){ el.classList.remove("sel"); el.setAttribute("aria-pressed","false"); el.querySelector(".go").textContent="この国にする"; });
-    $("chosen-nm").innerHTML='まだ選んでいません<small>上の「行き先を選ぶ」から、国を選んでください</small>';
+    selected=null; renderCards();
+    $("chosen-nm").innerHTML='まだ選んでいません<small>上の「気分から、国を選ぶ」から、国を選んでください</small>';
     $("chosen-pr").textContent="";
     document.querySelector(".stub").scrollIntoView({behavior:"smooth", block:"start"});
   });
