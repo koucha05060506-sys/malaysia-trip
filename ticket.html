@@ -232,14 +232,21 @@ b.hi{color:var(--fg);}
 .panel-b .lead b{color:var(--fg);}
 .facets{display:grid;grid-template-columns:1fr;gap:9px;}
 @media (min-width:520px){.facets{grid-template-columns:1fr 1fr;}}
-.facet{border:1px solid var(--rule);border-radius:10px;padding:13px 15px;background:var(--card);}
-.facet.hot{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);}
+.facet{border:1px solid var(--rule);border-radius:10px;padding:13px 15px;background:var(--card);
+  text-align:left;width:100%;font:inherit;color:inherit;cursor:pointer;display:block;
+  transition:border-color .12s,transform .1s,background .12s;}
+.facet:hover{border-color:var(--ink);transform:translateY(-1px);}
+.facet:focus-visible{outline:2px solid var(--sun);outline-offset:2px;}
+.facet.hot{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink);cursor:default;}
+.facet.hot:hover{transform:none;}
 .facet .fh{display:flex;align-items:center;gap:8px;margin:0 0 5px;}
 .facet .fh .fe{font-size:16px;line-height:1;}
 .facet .fh .fl{font-family:var(--f-disp);font-weight:800;font-size:14.5px;}
 .facet .fh .tag{margin-left:auto;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;
   color:var(--ink);background:var(--ink-pale);border-radius:99px;padding:2px 7px;}
 .facet p{margin:0;font-size:13px;line-height:1.7;color:var(--fg-mid);}
+.facet .fgo{display:block;margin-top:8px;font-family:var(--f-mono);font-size:10px;
+  letter-spacing:.05em;font-weight:700;color:var(--ink);}
 .panel-cta{position:sticky;bottom:0;background:var(--paper);padding:14px 18px 18px;
   border-top:1px solid var(--rule);display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
 .panel-cta .pr{font-family:var(--f-disp);font-weight:800;font-size:17px;color:var(--coral);}
@@ -787,10 +794,13 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     var m = activeMood ? moodById(activeMood) : null;
     $("panel-lead").innerHTML = 'この国の楽しみ方を、気分ごとに全部。気になったら、そのまま予約へ。';
     $("panel-facets").innerHTML = MOODS.map(function(mo){
-      var hot = activeMood===mo.id ? " hot" : "";
-      var tag = activeMood===mo.id ? '<span class="tag">いま見てる気分</span>' : '';
-      return '<div class="facet'+hot+'"><div class="fh"><span class="fe">'+mo.e+'</span>'
-        +'<span class="fl">'+esc(mo.l)+'</span>'+tag+'</div><p>'+esc(FACETS[id][mo.id])+'</p></div>';
+      var isNow = activeMood===mo.id;
+      var tag = isNow ? '<span class="tag">いま見てる気分</span>' : '';
+      var go  = isNow ? '' : '<span class="fgo">この気分でスポットを探す →</span>';
+      return '<button type="button" class="facet'+(isNow?' hot':'')+'" data-mood="'+mo.id+'">'
+        +'<div class="fh"><span class="fe">'+mo.e+'</span>'
+        +'<span class="fl">'+esc(mo.l)+'</span>'+tag+'</div>'
+        +'<p>'+esc(FACETS[id][mo.id])+'</p>'+go+'</button>';
     }).join("");
     panel.classList.add("open"); panel.setAttribute("aria-hidden","false");
     document.body.classList.add("noscroll");
@@ -807,6 +817,16 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     if(panelId){ selectCountry(panelId, false); }
     closePanel();
     $("resv").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
+  // パネル内のカテゴリを押すと、その気分でスポット探しに戻る
+  $("panel-facets").addEventListener("click", function(e){
+    var f = e.target.closest(".facet");
+    if(!f || f.classList.contains("hot")) return;  // いま見てる気分は無反応
+    var mid = f.dataset.mood;
+    closePanel();
+    setMood(mid);
+    $("pick").scrollIntoView({behavior:"smooth", block:"start"});
   });
 
   function selectCountry(id, scroll){
