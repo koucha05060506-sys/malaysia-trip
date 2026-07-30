@@ -779,6 +779,29 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
 
   // ---- 国の深掘りパネル ----
   var panel=$("panel");
+  function spotNameFor(id, mood){
+    var list=SPOTS[mood]; for(var i=0;i<list.length;i++) if(list[i].c===id) return list[i].n; return null;
+  }
+  function facetsHTML(id){
+    return MOODS.map(function(mo){
+      var isNow = activeMood===mo.id;
+      var tag = isNow ? '<span class="tag">いま見てる気分</span>' : '';
+      var go  = isNow ? '' : '<span class="fgo">この気分に切りかえる →</span>';
+      return '<button type="button" class="facet'+(isNow?' hot':'')+'" data-mood="'+mo.id+'">'
+        +'<div class="fh"><span class="fe">'+mo.e+'</span>'
+        +'<span class="fl">'+esc(mo.l)+'</span>'+tag+'</div>'
+        +'<p>'+esc(FACETS[id][mo.id])+'</p>'+go+'</button>';
+    }).join("");
+  }
+  function paintPanelBody(spotName){
+    var c=byId(panelId), rev=$("panel-reveal");
+    if(spotName){
+      rev.hidden=false;
+      rev.innerHTML='さっきの「'+esc(spotName)+'」は…<br><b>'+c.fl+' '+esc(c.jp)+'</b> でした。';
+    } else { rev.hidden=true; }
+    $("panel-lead").innerHTML='この国の楽しみ方を、気分ごとに全部。気になったら、そのまま予約へ。';
+    $("panel-facets").innerHTML=facetsHTML(panelId);
+  }
   function openPanel(id, spotName){
     panelId=id; panelSpot=spotName||null;
     var c=byId(id);
@@ -786,22 +809,7 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     $("panel-fl").textContent=c.fl;
     $("panel-name").textContent=c.jp;
     $("panel-pr").innerHTML=esc(c.price)+(c.id==="MY"?'':' <small>から相談</small>');
-    var rev=$("panel-reveal");
-    if(spotName){
-      rev.hidden=false;
-      rev.innerHTML='さっきの「'+esc(spotName)+'」は…<br><b>'+c.fl+' '+esc(c.jp)+'</b> でした。';
-    } else { rev.hidden=true; }
-    var m = activeMood ? moodById(activeMood) : null;
-    $("panel-lead").innerHTML = 'この国の楽しみ方を、気分ごとに全部。気になったら、そのまま予約へ。';
-    $("panel-facets").innerHTML = MOODS.map(function(mo){
-      var isNow = activeMood===mo.id;
-      var tag = isNow ? '<span class="tag">いま見てる気分</span>' : '';
-      var go  = isNow ? '' : '<span class="fgo">この気分でスポットを探す →</span>';
-      return '<button type="button" class="facet'+(isNow?' hot':'')+'" data-mood="'+mo.id+'">'
-        +'<div class="fh"><span class="fe">'+mo.e+'</span>'
-        +'<span class="fl">'+esc(mo.l)+'</span>'+tag+'</div>'
-        +'<p>'+esc(FACETS[id][mo.id])+'</p>'+go+'</button>';
-    }).join("");
+    paintPanelBody(spotName);
     panel.classList.add("open"); panel.setAttribute("aria-hidden","false");
     document.body.classList.add("noscroll");
     $("panel-close").focus();
@@ -819,14 +827,15 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     $("resv").scrollIntoView({behavior:"smooth", block:"start"});
   });
 
-  // パネル内のカテゴリを押すと、その気分でスポット探しに戻る
+  // パネル内のカテゴリを押すと、同じ国のまま その気分に切りかわる
   $("panel-facets").addEventListener("click", function(e){
     var f = e.target.closest(".facet");
     if(!f || f.classList.contains("hot")) return;  // いま見てる気分は無反応
     var mid = f.dataset.mood;
-    closePanel();
-    setMood(mid);
-    $("pick").scrollIntoView({behavior:"smooth", block:"start"});
+    setMood(mid);                              // 背景のスポット一覧・チップも同期
+    paintPanelBody(spotNameFor(panelId, mid)); // パネルはそのまま、あかしとハイライトだけ更新
+    var pn = panel.querySelector(".panel");    // 内側のスクロール領域を上へ
+    if(pn) pn.scrollTop = 0;
   });
 
   function selectCountry(id, scroll){
