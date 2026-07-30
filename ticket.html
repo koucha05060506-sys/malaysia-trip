@@ -145,7 +145,32 @@ b.hi{color:var(--fg);}
 .moodhint{margin:12px 0 0;font-size:14px;color:var(--fg-mid);}
 .moodhint b{color:var(--fg);}
 
-/* 7カ国の選択グリッド */
+/* スポット（国を伏せる）グリッド */
+.spots{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+@media (min-width:620px){.spots{grid-template-columns:1fr 1fr 1fr;}}
+.spot{position:relative;border:1px solid var(--rule);border-radius:var(--r);
+  background:var(--card);text-align:left;cursor:pointer;font:inherit;color:inherit;
+  padding:15px 15px 14px;display:flex;flex-direction:column;gap:0;min-height:132px;
+  transition:border-color .12s,transform .12s;overflow:hidden;}
+.spot::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 100% 0%, var(--ink-pale), transparent 55%);opacity:.6;}
+.spot:hover{border-color:var(--ink);transform:translateY(-2px);}
+.spot:focus-visible{outline:3px solid var(--sun);outline-offset:2px;}
+.spot > *{position:relative;}
+.spot .q{font-family:var(--f-disp);font-weight:800;font-size:22px;color:var(--ink);
+  line-height:1;margin-bottom:10px;opacity:.55;}
+.spot .sn{font-family:var(--f-disp);font-weight:800;font-size:15.5px;line-height:1.4;margin:0 0 5px;}
+.spot .st{font-size:12.5px;line-height:1.65;color:var(--fg-mid);margin:0;flex:1;}
+.spot .hint{margin-top:10px;font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;
+  color:var(--ink);font-weight:700;}
+.spot .cat{position:absolute;top:12px;right:13px;font-size:16px;line-height:1;opacity:.5;}
+
+/* パネルの国あかし */
+.reveal{background:var(--ink);color:var(--on-ink);border-radius:10px;padding:12px 15px;margin:0 0 15px;
+  font-size:13.5px;line-height:1.6;}
+.reveal b{font-family:var(--f-disp);font-size:15px;}
+
+/* 7カ国の選択グリッド（未使用時の予備） */
 .countries{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
 @media (min-width:620px){.countries{grid-template-columns:1fr 1fr 1fr;}}
 .cc{position:relative;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;
@@ -405,13 +430,13 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     </section>
 
     <section class="sec" id="pick">
-      <p class="eyebrow"><span class="n">02</span> 気分から、国を選ぶ</p>
-      <h2 class="sec-h">やりたいこと（気分）から、<br>行きたい国が見つかります。</h2>
-      <p class="lede">まず<b class="hi">気分</b>を選んでください。7つの国が、その気分で見えてきます。気になった国をひらくと、<b class="hi">その国の残り全部の楽しみ方</b>まで分かります。どれも<b class="hi">航空券＋宿込みの3泊4日</b>です。</p>
+      <p class="eyebrow"><span class="n">02</span> 気分から、スポットを探す</p>
+      <h2 class="sec-h">気になったスポットを押すと、<br>それがどこの国か分かります。</h2>
+      <p class="lede">まず<b class="hi">気分</b>を選んでください。国は伏せたまま、スポットがずらりと並びます。「これいいな」と思ったものを押すと、<b class="hi">はじめて国が分かって</b>、その国の楽しみ方も全部見えます。</p>
 
       <div class="moodbar" id="moods"></div>
       <p class="moodhint" id="moodhint"></p>
-      <div class="countries" id="countries"></div>
+      <div class="spots" id="spots"></div>
     </section>
 
     <section class="sec" id="resv">
@@ -511,6 +536,7 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
           </div>
         </div>
         <div class="panel-b">
+          <div class="reveal" id="panel-reveal" hidden></div>
           <p class="lead" id="panel-lead"></p>
           <div class="facets" id="panel-facets"></div>
         </div>
@@ -630,9 +656,81 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
         thrill:"アイランドホッピング、透明な海でダイビング。"}
   };
 
+  // ---- スポット（国は伏せる。押すと分かる） ----
+  var SPOTS = {
+    eat:[
+      {c:"MY",n:"バナナの葉のナシレマ",t:"ココナッツで炊いたご飯に、辛いサンバルと目玉焼き。"},
+      {c:"KR",n:"鉄板で焼くサムギョプサル",t:"分厚い豚肉を、葉っぱで包んで一口。"},
+      {c:"TH",n:"屋台のパッタイ",t:"甘辛い米麺。ライムをぎゅっと搾って。"},
+      {c:"VN",n:"路地で食べる牛肉フォー",t:"澄んだスープの米麺。朝ごはんの定番。"},
+      {c:"GU",n:"炭火のチャモロBBQ",t:"甘辛いタレの肉を、豪快に焼く島の料理。"},
+      {c:"TW",n:"湯気を上げる小籠包",t:"皮を破ると、熱いスープがあふれる。"},
+      {c:"PH",n:"豚の丸焼きレチョン",t:"皮はパリパリ、中はジューシー。お祝いの味。"},
+      {c:"MY",n:"深夜の肉骨茶（バクテー）",t:"漢方の効いた、豚肉のスープ。夜食にどうぞ。"},
+      {c:"TW",n:"夜市の胡椒餅",t:"窯で焼いた、肉汁したたる胡椒まん。"}
+    ],
+    photo:[
+      {c:"MY",n:"虹色の272段の階段",t:"洞窟へ続く、極彩色のながい階段。"},
+      {c:"KR",n:"韓服で歩く古い宮殿",t:"色あざやかな民族衣装で、瓦屋根の宮殿を。"},
+      {c:"TH",n:"川に映る白い塔",t:"夕暮れ、水面にゆれる寺院のシルエット。"},
+      {c:"VN",n:"奇岩が浮かぶ海",t:"世界遺産の湾に、無数の岩の島。"},
+      {c:"GU",n:"エメラルドの入り江",t:"どこまでも透きとおる、南の海。"},
+      {c:"TW",n:"赤いランタンの坂道",t:"夜、提灯がともる石段の街並み。"},
+      {c:"PH",n:"切り立つ崖と透明な海",t:"石灰岩の壁に囲まれた、秘密の入り江。"},
+      {c:"TW",n:"地上382mの展望台",t:"かつて世界一だった塔から、街を見下ろす。"}
+    ],
+    relax:[
+      {c:"MY",n:"芝生の公園と噴水",t:"高層ビルの足元で、ごろりと寝ころぶ。"},
+      {c:"KR",n:"川辺のピクニック",t:"大きな川の土手で、チキンをつまむ夕方。"},
+      {c:"TH",n:"寺院で受けるタイ古式",t:"のばして、押して、ぜんぶ整う90分。"},
+      {c:"VN",n:"湖畔のカフェ",t:"練乳コーヒー片手に、ゆっくり流れる時間。"},
+      {c:"GU",n:"白砂のプライベートビーチ",t:"何もしない、を一日する贅沢。"},
+      {c:"TW",n:"山あいの温泉",t:"街から30分。硫黄の湯にとっぷり。"},
+      {c:"PH",n:"ハンモックで島時間",t:"波の音だけ。時計を見ない一日。"}
+    ],
+    walk:[
+      {c:"MY",n:"提灯がゆれる路地",t:"食べ歩きしながら、赤い路地をぶらぶら。"},
+      {c:"KR",n:"カフェが並ぶ通り",t:"倉庫を改装した、おしゃれな町の散歩。"},
+      {c:"TH",n:"迷路のような市場",t:"一万軒。歩くだけで一日つぶれる巨大市場。"},
+      {c:"VN",n:"旧市街とバイクの波",t:"クラクションの中を、えいっと道を渡る。"},
+      {c:"GU",n:"海沿いのショッピング通り",t:"潮風の中を、のんびり店めぐり。"},
+      {c:"TW",n:"食べ歩きの夜市",t:"匂いに誘われるまま、屋台から屋台へ。"},
+      {c:"PH",n:"石畳の旧市街",t:"城壁に囲まれた、スペイン時代の町並み。"}
+    ],
+    diff:[
+      {c:"MY",n:"モスクと寺院が隣同士",t:"イスラム・仏教・ヒンドゥーが同じ通りに。"},
+      {c:"KR",n:"眠らない24時間の街",t:"夜中でも店が開き、地下街がどこまでも続く。"},
+      {c:"TH",n:"金ぴかの寺とトゥクトゥク",t:"きらめく寺院の横を、三輪タクシーが走る。"},
+      {c:"VN",n:"道を埋めつくすバイク",t:"信号より多い、何万台ものバイクの川。"},
+      {c:"GU",n:"3時間半で英語とドル",t:"近いのに、看板もお金もアメリカ。"},
+      {c:"TW",n:"日本語が少し通じる屋台街",t:"どこか懐かしい、でも初めての夜市。"},
+      {c:"PH",n:"7000以上の島と英語",t:"公用語は英語。国じゅうが海に囲まれている。"}
+    ],
+    shop:[
+      {c:"MY",n:"バティックと錫細工",t:"ろうけつ染めの布と、銀色のおみやげ。"},
+      {c:"KR",n:"明洞のコスメ探し",t:"試して、もらって、袋いっぱいのスキンケア。"},
+      {c:"TH",n:"値切って買うナイトバザール",t:"言い値の半分から。交渉も旅のうち。"},
+      {c:"VN",n:"手刺繍とベトナム雑貨",t:"細かい刺繍の小物と、コーヒー豆。"},
+      {c:"GU",n:"免税店でまとめ買い",t:"ブランドもコスメも、税金なしで。"},
+      {c:"TW",n:"パイナップルケーキ探し",t:"店ごとに味が違う、定番のおみやげ。"},
+      {c:"PH",n:"真珠と貝のアクセ",t:"南の海が育てた、ひかる小物たち。"}
+    ],
+    thrill:[
+      {c:"MY",n:"深夜まで続く屋台街",t:"人と煙と匂い。眠らない熱帯の夜。"},
+      {c:"KR",n:"眠らないソウルの夜",t:"ライブ、屋台、明け方までのにぎわい。"},
+      {c:"TH",n:"カオサン通りの喧騒",t:"世界中の旅人が集まる、夜のカオス。"},
+      {c:"VN",n:"何万台ものバイクの波",t:"渡りきったら、ちょっとした冒険の達成感。"},
+      {c:"GU",n:"空から見るパラセーリング",t:"ボートに引かれて、海の上を飛ぶ。"},
+      {c:"TW",n:"熱気あふれる夜市",t:"ゲーム、屋台、原付の波。五感がフル稼働。"},
+      {c:"PH",n:"島から島へホッピング",t:"ボートで、無人島の海へくり出す。"}
+    ]
+  };
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
   var selected = null;   // 予約で選択中の国ID
-  var activeMood = null; // 選んでいる気分ID（nullはおすすめ）
+  var activeMood = "eat"; // 選んでいる気分ID
   var panelId = null;    // パネルで開いている国ID
+  var panelSpot = null;  // パネルを開いたスポット名（あかし用）
 
   // ---- 気分チップ描画 ----
   var moodbar = $("moods");
@@ -650,54 +748,50 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     Array.prototype.forEach.call(moodbar.children, function(el){
       el.setAttribute("aria-pressed", el.dataset.mood===id ? "true":"false");
     });
-    var hint=$("moodhint");
-    if(id){
-      var m=moodById(id);
-      hint.innerHTML='<b>'+m.e+' '+esc(m.l)+'</b>で見ています。国をひらくと、ほかの楽しみ方も分かります。';
-    } else {
-      hint.innerHTML='気分を選ぶと、7つの国がその目線で見えてきます。';
-    }
-    renderCards();
+    var m=moodById(id);
+    $("moodhint").innerHTML='<b>'+m.e+' '+esc(m.l)+'</b>のスポット。どれかを押すと、どこの国か分かります。';
+    renderSpots();
   }
 
-  // ---- カード描画 ----
-  var wrap = $("countries");
-  function renderCards(){
-    wrap.innerHTML="";
-    COUNTRIES.forEach(function(c){
-      var line = activeMood ? FACETS[c.id][activeMood] : c.ap;
+  // ---- スポット描画（国は伏せる） ----
+  var spotsWrap = $("spots");
+  function renderSpots(){
+    spotsWrap.innerHTML="";
+    var m=moodById(activeMood);
+    shuffle(SPOTS[activeMood]).forEach(function(sp){
       var b=document.createElement("button");
-      b.type="button"; b.className="cc"+(c.id===selected?" sel":""); b.dataset.id=c.id;
-      b.setAttribute("aria-pressed", c.id===selected?"true":"false");
+      b.type="button"; b.className="spot"; b.dataset.c=sp.c;
+      b.setAttribute("aria-label", sp.n+"（どこの国か、押すと分かります）");
       b.innerHTML =
-        '<div class="ph"><span class="fl">'+c.fl+'</span><img loading="lazy" src="'+c.img+'" alt="'+esc(c.jp)+'の風景"></div>'
-       +'<div class="bd"><p class="nm">'+esc(c.jp)+'</p><p class="en">'+esc(c.en)+'</p>'
-       +'<p class="pkg">🧳 '+PKG+'</p>'
-       +'<p class="ap">'+esc(line)+'</p>'
-       +'<div class="meta"><span>✈ <b>'+esc(c.flight)+'</b></span><span>🕐 <b>'+esc(c.tz)+'</b></span></div>'
-       +'<div class="pick"><span class="pr">'+esc(c.price)+(c.id==="MY"?'':' <small>から相談</small>')+'</span>'
-       +'<span class="go">'+(c.id===selected?'選択中':'ひらいて見る')+'</span></div></div>';
-      b.addEventListener("click", function(){ openPanel(c.id); });
-      wrap.appendChild(b);
+        '<span class="cat">'+m.e+'</span>'
+       +'<span class="q">?</span>'
+       +'<span class="sn">'+esc(sp.n)+'</span>'
+       +'<span class="st">'+esc(sp.t)+'</span>'
+       +'<span class="hint">どこの国？ 押して発見 →</span>';
+      b.addEventListener("click", function(){ openPanel(sp.c, sp.n); });
+      spotsWrap.appendChild(b);
     });
   }
 
   // ---- 国の深掘りパネル ----
   var panel=$("panel");
-  function openPanel(id){
-    panelId=id;
+  function openPanel(id, spotName){
+    panelId=id; panelSpot=spotName||null;
     var c=byId(id);
     $("panel-img").src=c.img; $("panel-img").alt=esc(c.jp)+"の風景";
     $("panel-fl").textContent=c.fl;
     $("panel-name").textContent=c.jp;
     $("panel-pr").innerHTML=esc(c.price)+(c.id==="MY"?'':' <small>から相談</small>');
+    var rev=$("panel-reveal");
+    if(spotName){
+      rev.hidden=false;
+      rev.innerHTML='さっきの「'+esc(spotName)+'」は…<br><b>'+c.fl+' '+esc(c.jp)+'</b> でした。';
+    } else { rev.hidden=true; }
     var m = activeMood ? moodById(activeMood) : null;
-    $("panel-lead").innerHTML = m
-      ? '<b>'+m.e+' '+esc(m.l)+'</b>で、この国にたどり着きました。ほかの楽しみ方も、ぜんぶ見てみましょう。'
-      : 'この国の楽しみ方を、気分ごとに。気になったら、そのまま予約へ。';
+    $("panel-lead").innerHTML = 'この国の楽しみ方を、気分ごとに全部。気になったら、そのまま予約へ。';
     $("panel-facets").innerHTML = MOODS.map(function(mo){
       var hot = activeMood===mo.id ? " hot" : "";
-      var tag = activeMood===mo.id ? '<span class="tag">この気分で来た</span>' : '';
+      var tag = activeMood===mo.id ? '<span class="tag">いま見てる気分</span>' : '';
       return '<div class="facet'+hot+'"><div class="fh"><span class="fe">'+mo.e+'</span>'
         +'<span class="fl">'+esc(mo.l)+'</span>'+tag+'</div><p>'+esc(FACETS[id][mo.id])+'</p></div>';
     }).join("");
@@ -720,7 +814,6 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
 
   function selectCountry(id, scroll){
     selected = id;
-    renderCards();
     var c = byId(id);
     $("chosen-nm").innerHTML = esc(c.jp)+' 3泊4日<small>航空券＋宿込み'+(c.id==="MY"?"・9月出発":"")+'</small>';
     $("chosen-pr").textContent = c.price;
@@ -728,7 +821,7 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     if(scroll){ $("resv").scrollIntoView({behavior:"smooth", block:"start"}); }
   }
 
-  setMood(null); // 初期描画
+  setMood("eat"); // 初期描画（最初の気分でスポット表示）
 
   // ---- 保存 ----
   function store(){ try{ return window.localStorage; }catch(e){ return null; } }
@@ -871,7 +964,7 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     var nav=document.querySelector(".top .nav-btn");
     if(nav){ nav.textContent="予約にすすむ ↓"; }
     showForm(null); form.reset();
-    selected=null; renderCards();
+    selected=null;
     $("chosen-nm").innerHTML='まだ選んでいません<small>上の「気分から、国を選ぶ」から、国を選んでください</small>';
     $("chosen-pr").textContent="";
     document.querySelector(".stub").scrollIntoView({behavior:"smooth", block:"start"});
