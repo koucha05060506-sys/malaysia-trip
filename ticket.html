@@ -204,6 +204,13 @@ b.hi{color:var(--fg);}
 .sitem .si-t{font-family:var(--f-disp);font-weight:800;font-size:15px;margin:0 0 4px;}
 .sitem .si-t::before{content:"✓ ";color:var(--good);}
 .sitem .si-s{margin:0;font-size:13.5px;line-height:1.75;color:var(--fg-mid);}
+.sitem .si-links{margin:9px 0 0;display:flex;flex-direction:column;gap:5px;}
+.sitem .si-links a{font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;width:fit-content;
+  border-bottom:1px solid var(--rule-2);padding-bottom:1px;}
+.sitem .si-links a::before{content:"🔗";font-size:11px;}
+.sitem .si-links a:hover{border-bottom-color:var(--ink);}
+.sitem .si-links a:focus-visible{outline:2px solid var(--sun);outline-offset:2px;}
 .shiori-f{border-top:1px solid var(--rule);padding:13px 20px;display:flex;gap:10px;flex-wrap:wrap;
   align-items:center;background:var(--card-2);}
 .shiori-f .note{font-size:12px;color:var(--fg-dim);flex-basis:100%;line-height:1.7;}
@@ -216,6 +223,9 @@ b.hi{color:var(--fg);}
   .worries,.shiori-f,.eyebrow,.sec-h,.lede{display:none !important;}
   .shiori{box-shadow:none;border:1px solid #999;}
   .bgfx{display:none !important;}
+  /* 印刷では、リンクの文字のあとにURLも出す（紙で辿れるように） */
+  .sitem .si-links a{border:0;color:#000;}
+  .sitem .si-links a::after{content:" — "attr(href);font-weight:400;font-size:11px;color:#555;word-break:break-all;}
 }
 
 /* 7カ国の選択グリッド（未使用時の予備） */
@@ -938,16 +948,36 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
   // ---- しおり（不安→安心） ----
   var SKEY="nrt_shiori_v1";
   var WORRIES=[
-    {id:"lang",e:"🗣",t:"言葉が通じるか",s:"7カ国とも英語がわりと通じます。駅や店の表示も英語。困ったら指差しと翻訳アプリ、数字は電卓を見せればOK。"},
-    {id:"immig",e:"🛂",t:"出入国の手続き",s:"日本のパスポートなら90日以内の観光はビザ不要。国により事前のオンライン入国カードが必要なので、そこはご案内します。成田で予行演習も。"},
-    {id:"safety",e:"🛡",t:"治安",s:"選んだ国はどれもアジアで治安が良いほう。夜の一人歩きとスリにだけ注意。貴重品は分けて持ちましょう。"},
-    {id:"money",e:"💰",t:"お金まわり",s:"現地通貨は空港のATMか両替で。カードも使えますが屋台は現金。1日の食事＋交通で3,000円くらいが目安です。"},
-    {id:"net",e:"📶",t:"ネット・通信",s:"eSIMを日本で入れておけば、着陸した瞬間からつながります。Wi-Fi探しは不要。地図も翻訳もすぐ使えます。"},
-    {id:"move",e:"🚕",t:"空港から街への移動",s:"電車か配車アプリGrab。出発前にGrabを登録しておけば、行き先を入力するだけ。日本のタクシーより安いです。"},
-    {id:"food",e:"🍽",t:"食事・お腹",s:"火の通ったもの、回転の速い店を選べば安心。飲み水はミネラルウォーターで。辛いのが苦手なら中華系のお店が無難です。"},
-    {id:"health",e:"🩹",t:"体調・ケガ",s:"海外旅行保険に入り、常備薬を持参。何かあれば24時間の日本語サポート窓口に連絡できます。"},
-    {id:"alone",e:"🧍",t:"一緒に行く人がいない",s:"一人でも申し込めます。同じ日程で行く参加者もいます。声をかけるかどうかは、あなたの自由です。"},
-    {id:"pack",e:"🎒",t:"持ち物",s:"必須はパスポート・eSIM・現金少し・常備薬・変換プラグ。3泊4日なら機内持ち込みサイズのカバンで足ります。"}
+    {id:"lang",e:"🗣",t:"言葉が通じるか",
+     s:"7カ国はどこも、空港・駅・大きな店では英語がそこそこ通じます。完璧に話す必要はなく、単語を並べるだけで十分。メニューや看板は、スマホのカメラ翻訳（Google翻訳のカメラ機能）を向ければ、その場で日本語になります。会話は旅行用の音声翻訳アプリ「VoiceTra」（無料）が便利。値段や個数は、電卓アプリの数字を見せれば確実に伝わります。",
+     links:[{l:"Google翻訳（カメラ翻訳）",u:"https://translate.google.com/"},{l:"VoiceTra（NICTの無料音声翻訳）",u:"https://voicetra.nict.go.jp/"}]},
+    {id:"immig",e:"🛂",t:"出入国の手続き",
+     s:"日本のパスポートなら、7カ国とも90日以内の観光はビザ不要です。ただし多くの国が、到着前に『オンラインの入国カード（電子申告）』を求めます（マレーシアMDAC、韓国の入国申告、タイTDAC、台湾・フィリピンのeTravel等）。出発の数日前に、行き先の最新の必要手続きを外務省の渡航ページで確認してください。パスポートの残存有効期間（6か月以上が目安）も要チェック。成田では、チェックイン〜保安検査〜出国審査の流れを予行演習します。",
+     links:[{l:"外務省 海外渡航・滞在（各国の入国条件）",u:"https://www.mofa.go.jp/mofaj/toko/index.html"}]},
+    {id:"safety",e:"🛡",t:"治安",
+     s:"選んだ国はどれもアジアの中で治安が良いほうですが、日本よりスリ・置き引き・ぼったくりは多めです。人混みや夜の繁華街ではバッグを前に抱え、貴重品は分散して。夜の一人歩きは避け、移動は正規タクシーか配車アプリで。出発前に外務省『海外安全ホームページ』で渡航先の最新情報を確認し、『たびレジ』に登録しておくと、現地の緊急情報や災害情報がメールで届きます。",
+     links:[{l:"外務省 海外安全ホームページ",u:"https://www.anzen.mofa.go.jp/"},{l:"たびレジ（無料の渡航登録）",u:"https://www.ezairyu.mofa.go.jp/tabireg/index.html"}]},
+    {id:"money",e:"💰",t:"お金まわり",
+     s:"現地通貨は、着いてすぐ空港のATM（クレジット/デビットで現地通貨を引き出せる）か両替所で用意します。街のカフェやモールはカードが使えますが、屋台・市場・ローカルバスは現金が基本。物価は日本の1/3〜1/2くらいで、1日の食事＋交通で3,000円ほどが目安です。大金は持ち歩かず、カードと現金・置き場所を分けて。レートの目安は、スマホで『（通貨名）円』と検索すればすぐ出ます。",
+     links:[]},
+    {id:"net",e:"📶",t:"ネット・通信",
+     s:"この旅はeSIMが料金に含まれています。日本にいるうちにスマホへ入れておけば、現地で設定を切り替えるだけでネットにつながり、Wi-Fi探しは不要。地図・翻訳・配車アプリ・連絡が、着陸した瞬間から使えます。出発前に確認するのは『自分のスマホがeSIM対応か』だけ（比較的新しい機種ならほぼ対応）。入れ方・切り替え方は、申し込み後にひとつずつご案内します。",
+     links:[]},
+    {id:"move",e:"🚕",t:"空港から街への移動",
+     s:"空港から市内へは、電車（多くの国に空港鉄道あり）か、配車アプリ『Grab』が基本です。Grabは行き先を地図で指定すると料金が先に確定するので、言葉が要らず、ぼったくりの心配もありません。日本のタクシーよりかなり安い。出発前にGrabアプリを入れて、支払い方法（カード登録）まで済ませておくと、当日はスマホひとつで動けます。",
+     links:[{l:"Grab（配車アプリ・公式）",u:"https://www.grab.com/"}]},
+    {id:"food",e:"🍽",t:"食事・お腹",
+     s:"『火が通っていて、人が並ぶ（回転の速い）店』を選べば、屋台でもまず安心です。生もの・氷・カットフルーツの屋台は、最初は控えめに。飲み水はペットボトルのミネラルウォーターで、心配なら歯磨きもそれで。辛いのが苦手なら、中華系の店やごはんものが無難です。整腸剤を1つ持っておくと安心。渡航先の食べ物・水の注意は、厚生労働省検疫所『FORTH』で確認できます。",
+     links:[{l:"FORTH 厚労省検疫所（渡航先の健康情報）",u:"https://www.forth.go.jp/"}]},
+    {id:"health",e:"🩹",t:"体調・ケガ",
+     s:"海外旅行保険には必ず入りましょう（クレジットカード付帯だけだと不足しがち。治療費・救援者費用が手厚いものを）。頭痛薬・下痢止め・酔い止め・絆創膏など、普段の常備薬は日本から。現地の薬は成分が分かりにくいので予備を持参。行き先で必要な予防接種や、流行している感染症は、出発前にFORTHで確認を。旅行中に体調を崩したら、24時間の日本語サポート窓口に連絡できます。",
+     links:[{l:"FORTH 厚労省検疫所（予防接種・感染症）",u:"https://www.forth.go.jp/"}]},
+    {id:"alone",e:"🧍",t:"一緒に行く人がいない",
+     s:"一人でも申し込めます。同じ日程で行く参加者が他にもいるので、現地で『同じ便の人』とゆるくつながることもできます（もちろん強制ではありません）。一人旅は自分のペースで動けて、現地の人や他の旅行者と話す機会も自然と増えます。心配なら、出発前の成田ミニ万博で流れを体験できますし、現地では24時間のサポート窓口が支えになります。",
+     links:[]},
+    {id:"pack",e:"🎒",t:"持ち物",
+     s:"3泊4日なら、機内持ち込みサイズのカバン1つで足ります。必須は【パスポート／eSIM／現金少し＋カード／常備薬／変換プラグ（行き先のコンセント形状を確認）／モバイルバッテリー／薄い上着（機内と強い冷房対策）】。衣類は現地が暑いので薄手で少なめに——足りなければ現地で安く買えます。パスポートのコピーを別の場所に分けて持つと、万一なくしたときも安心です。",
+     links:[]}
   ];
   function worryById(id){ for(var i=0;i<WORRIES.length;i++) if(WORRIES[i].id===id) return WORRIES[i]; return null; }
 
@@ -979,8 +1009,13 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
     // WORRIESの並び順で
     var items=WORRIES.filter(function(w){ return picked.indexOf(w.id)>=0; });
     body.innerHTML=items.map(function(w){
+      var links = (w.links&&w.links.length)
+        ? '<p class="si-links">'+w.links.map(function(k){
+            return '<a href="'+k.u+'" target="_blank" rel="noopener">'+esc(k.l)+'</a>';
+          }).join("")+'</p>'
+        : '';
       return '<div class="sitem"><div class="si-e">'+w.e+'</div><div><p class="si-t">'+esc(w.t)+'</p>'
-        +'<p class="si-s">'+esc(w.s)+'</p></div></div>';
+        +'<p class="si-s">'+esc(w.s)+'</p>'+links+'</div></div>';
     }).join("");
     var nm=""; var r=load(); if(r&&r.name) nm=r.name+"さんの";
     cnt.textContent=nm+"安心しおり ・ "+items.length+"件";
