@@ -173,6 +173,51 @@ b.hi{color:var(--fg);}
   font-size:13.5px;line-height:1.6;}
 .reveal b{font-family:var(--f-disp);font-size:15px;}
 
+/* しおり（不安えらび） */
+.worries{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px;}
+@media (min-width:620px){.worries{grid-template-columns:1fr 1fr 1fr;}}
+.worry{position:relative;border:1px solid var(--rule);border-radius:var(--r);background:var(--card);
+  text-align:left;cursor:pointer;font:inherit;color:inherit;padding:14px 15px;
+  display:flex;flex-direction:column;gap:6px;transition:border-color .12s,background .12s;}
+.worry:hover{border-color:var(--ink);}
+.worry:focus-visible{outline:3px solid var(--sun);outline-offset:2px;}
+.worry .we{font-size:20px;line-height:1;}
+.worry .wt{font-family:var(--f-disp);font-weight:800;font-size:14px;line-height:1.4;}
+.worry .wc{position:absolute;top:11px;right:12px;width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--rule-2);display:grid;place-items:center;font-size:12px;color:transparent;}
+.worry[aria-pressed="true"]{border-color:var(--ink);background:var(--ink-pale);}
+.worry[aria-pressed="true"] .wc{background:var(--ink);border-color:var(--ink);color:var(--on-ink);}
+
+/* しおり本体 */
+.shiori{margin-top:24px;border:1px solid var(--rule-2);border-radius:var(--r);overflow:hidden;
+  background:var(--card);box-shadow:0 6px 30px rgba(0,0,0,.08);}
+.shiori-h{background:var(--ink);color:var(--on-ink);padding:16px 20px;}
+.shiori-h .t{font-family:var(--f-disp);font-weight:800;font-size:18px;margin:0;display:flex;
+  align-items:center;gap:9px;flex-wrap:wrap;}
+.shiori-h .c{font-family:var(--f-mono);font-size:11px;opacity:.8;margin:4px 0 0;letter-spacing:.06em;}
+.shiori-b{padding:8px 20px 18px;}
+.shiori-empty{padding:26px 20px;text-align:center;color:var(--fg-dim);font-size:14px;line-height:1.9;}
+.sitem{display:grid;grid-template-columns:34px 1fr;gap:13px;padding:15px 0;
+  border-bottom:1px dashed var(--rule);align-items:start;}
+.sitem:last-child{border-bottom:0;}
+.sitem .si-e{font-size:20px;line-height:1.2;}
+.sitem .si-t{font-family:var(--f-disp);font-weight:800;font-size:15px;margin:0 0 4px;}
+.sitem .si-t::before{content:"✓ ";color:var(--good);}
+.sitem .si-s{margin:0;font-size:13.5px;line-height:1.75;color:var(--fg-mid);}
+.shiori-f{border-top:1px solid var(--rule);padding:13px 20px;display:flex;gap:10px;flex-wrap:wrap;
+  align-items:center;background:var(--card-2);}
+.shiori-f .note{font-size:12px;color:var(--fg-dim);flex-basis:100%;line-height:1.7;}
+.shiori-f button{font:inherit;font-size:14px;font-weight:800;padding:11px 18px;border-radius:99px;
+  cursor:pointer;border:1px solid var(--ink);background:var(--card);color:var(--fg);}
+.shiori-f button.solid{background:var(--ink);color:var(--on-ink);}
+.shiori-f button:hover{opacity:.88;}
+@media print{
+  .top,.stub,.saved,.recap,.recall,.moodbar,.moodhint,.spots,#resv,.foot,
+  .worries,.shiori-f,.eyebrow,.sec-h,.lede{display:none !important;}
+  .shiori{box-shadow:none;border:1px solid #999;}
+  .bgfx{display:none !important;}
+}
+
 /* 7カ国の選択グリッド（未使用時の予備） */
 .countries{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
 @media (min-width:620px){.countries{grid-template-columns:1fr 1fr 1fr;}}
@@ -453,8 +498,29 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
       <div class="spots" id="spots"></div>
     </section>
 
+    <section class="sec" id="shiori">
+      <p class="eyebrow"><span class="n">03</span> 不安を、しおりに</p>
+      <h2 class="sec-h">気になる不安を選ぶと、<br>あなただけの安心しおりができます。</h2>
+      <p class="lede">全部を心配する必要はありません。<b class="hi">自分がひっかかるものだけ</b>を選んでください。その一つずつに「こうすれば大丈夫」を用意しました。</p>
+
+      <div class="worries" id="worries"></div>
+
+      <div class="shiori" id="shioriBox">
+        <div class="shiori-h">
+          <p class="t">🧭 あなたの安心しおり</p>
+          <p class="c" id="shiori-count">まだ何も選んでいません</p>
+        </div>
+        <div class="shiori-b" id="shiori-body"></div>
+        <div class="shiori-f">
+          <button type="button" class="solid" id="shiori-print">しおりを保存・印刷</button>
+          <button type="button" id="shiori-clear">選び直す</button>
+          <p class="note">選んだ内容はこの端末に保存されます。出発前に、いつでも見返せます。</p>
+        </div>
+      </div>
+    </section>
+
     <section class="sec" id="resv">
-      <p class="eyebrow"><span class="n">03</span> 予約する</p>
+      <p class="eyebrow"><span class="n">04</span> 予約する</p>
       <h2 class="sec-h">その続きを、ここで。</h2>
       <p class="lede">今日の体験の、自然な続きです。まだ確定ではありません。<b class="hi">仮予約</b>を入れておくと、席が埋まる前に案内が届きます。</p>
 
@@ -868,6 +934,70 @@ input:focus,select:focus{outline:2px solid var(--ink);outline-offset:-1px;border
   }
 
   setMood("eat"); // 初期描画（最初の気分でスポット表示）
+
+  // ---- しおり（不安→安心） ----
+  var SKEY="nrt_shiori_v1";
+  var WORRIES=[
+    {id:"lang",e:"🗣",t:"言葉が通じるか",s:"7カ国とも英語がわりと通じます。駅や店の表示も英語。困ったら指差しと翻訳アプリ、数字は電卓を見せればOK。"},
+    {id:"immig",e:"🛂",t:"出入国の手続き",s:"日本のパスポートなら90日以内の観光はビザ不要。国により事前のオンライン入国カードが必要なので、そこはご案内します。成田で予行演習も。"},
+    {id:"safety",e:"🛡",t:"治安",s:"選んだ国はどれもアジアで治安が良いほう。夜の一人歩きとスリにだけ注意。貴重品は分けて持ちましょう。"},
+    {id:"money",e:"💰",t:"お金まわり",s:"現地通貨は空港のATMか両替で。カードも使えますが屋台は現金。1日の食事＋交通で3,000円くらいが目安です。"},
+    {id:"net",e:"📶",t:"ネット・通信",s:"eSIMを日本で入れておけば、着陸した瞬間からつながります。Wi-Fi探しは不要。地図も翻訳もすぐ使えます。"},
+    {id:"move",e:"🚕",t:"空港から街への移動",s:"電車か配車アプリGrab。出発前にGrabを登録しておけば、行き先を入力するだけ。日本のタクシーより安いです。"},
+    {id:"food",e:"🍽",t:"食事・お腹",s:"火の通ったもの、回転の速い店を選べば安心。飲み水はミネラルウォーターで。辛いのが苦手なら中華系のお店が無難です。"},
+    {id:"health",e:"🩹",t:"体調・ケガ",s:"海外旅行保険に入り、常備薬を持参。何かあれば24時間の日本語サポート窓口に連絡できます。"},
+    {id:"alone",e:"🧍",t:"一緒に行く人がいない",s:"一人でも申し込めます。同じ日程で行く参加者もいます。声をかけるかどうかは、あなたの自由です。"},
+    {id:"pack",e:"🎒",t:"持ち物",s:"必須はパスポート・eSIM・現金少し・常備薬・変換プラグ。3泊4日なら機内持ち込みサイズのカバンで足ります。"}
+  ];
+  function worryById(id){ for(var i=0;i<WORRIES.length;i++) if(WORRIES[i].id===id) return WORRIES[i]; return null; }
+
+  var picked = (function(){ var s=store(); if(!s) return []; try{ return JSON.parse(s.getItem(SKEY)||"[]"); }catch(e){ return []; } })();
+  function savePicked(){ var s=store(); if(s) try{ s.setItem(SKEY, JSON.stringify(picked)); }catch(e){} }
+
+  var wbox=$("worries");
+  WORRIES.forEach(function(w){
+    var b=document.createElement("button");
+    b.type="button"; b.className="worry"; b.dataset.id=w.id;
+    b.setAttribute("aria-pressed", picked.indexOf(w.id)>=0 ? "true":"false");
+    b.innerHTML='<span class="wc">✓</span><span class="we">'+w.e+'</span><span class="wt">'+esc(w.t)+'</span>';
+    b.addEventListener("click", function(){
+      var i=picked.indexOf(w.id);
+      if(i>=0) picked.splice(i,1); else picked.push(w.id);
+      b.setAttribute("aria-pressed", i>=0 ? "false":"true");
+      savePicked(); renderShiori();
+    });
+    wbox.appendChild(b);
+  });
+
+  function renderShiori(){
+    var body=$("shiori-body"), cnt=$("shiori-count");
+    if(!picked.length){
+      body.innerHTML='<div class="shiori-empty">上の不安から、気になるものを選んでください。<br>選んだぶんだけ、「大丈夫」がここにたまります。</div>';
+      cnt.textContent="まだ何も選んでいません";
+      return;
+    }
+    // WORRIESの並び順で
+    var items=WORRIES.filter(function(w){ return picked.indexOf(w.id)>=0; });
+    body.innerHTML=items.map(function(w){
+      return '<div class="sitem"><div class="si-e">'+w.e+'</div><div><p class="si-t">'+esc(w.t)+'</p>'
+        +'<p class="si-s">'+esc(w.s)+'</p></div></div>';
+    }).join("");
+    var nm=""; var r=load(); if(r&&r.name) nm=r.name+"さんの";
+    cnt.textContent=nm+"安心しおり ・ "+items.length+"件";
+  }
+
+  $("shiori-clear").addEventListener("click", function(){
+    if(!picked.length) return;
+    if(!window.confirm("選んだ不安をすべて外します。よろしいですか？")) return;
+    picked=[]; savePicked();
+    Array.prototype.forEach.call(wbox.children, function(el){ el.setAttribute("aria-pressed","false"); });
+    renderShiori();
+  });
+  $("shiori-print").addEventListener("click", function(){
+    if(!picked.length){ window.alert("先に、気になる不安をひとつ選んでください。"); return; }
+    window.print();
+  });
+  renderShiori();
 
   // ---- 保存 ----
   function store(){ try{ return window.localStorage; }catch(e){ return null; } }
